@@ -1,19 +1,59 @@
-import React, { useState,useRef } from "react";
+import React, { useState, useRef } from "react";
 import Header from "./Header";
-import {checkValidData} from "../utils/checkValidData"
+import { checkValidData } from "../utils/checkValidData";
+import { auth } from "../utils/firebase";
+import {  createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
+
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
-  const [errorMessage,setErrorMessage] =useState(null)
-  const email =useRef(null)
-  const password = useRef(null)
-  const name = useRef(null)
+  const [errorMessage, setErrorMessage] = useState(null);
+  const email = useRef(null);
+  const password = useRef(null);
+  const name = useRef(null);
 
-  const handleButtonClick=()=>{
+  const handleButtonClick = () => {
     // validated the data
-    const message =checkValidData(email.current.value,password.current.value, isSignInForm ? "": name.current.value)
-     setErrorMessage(message)
-  }
+    const message = checkValidData(
+      email.current.value,
+      password.current.value,
+      
+    );
+    setErrorMessage(message);
+    if (message) return; // any error then return to prevent furter execution of code
+
+    // sign In and sign UP
+    if (!isSignInForm) {
+      // sign up login
+      createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user)
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage( errorCode +"-"+errorMessage)
+          // ..
+        });
+    } else {
+      // sign in login
+      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // Further sign-in logic can go here
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setErrorMessage(errorCode + " - " + errorMessage);
+      });
+    }
+  };
   const toggleSingInForm = () => {
     setIsSignInForm(!isSignInForm);
   };
@@ -39,23 +79,23 @@ const Login = () => {
           <h1 className="text-4xl font-bold mb-4">
             {isSignInForm ? "Sign In" : "Sign Up"}
           </h1>
-          <form onSubmit={(e)=>e.preventDefault()} className="flex flex-col ">
+          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col ">
             {!isSignInForm && (
               <input
-              ref={name}
+                ref={name}
                 type="text"
                 placeholder="Full Name"
                 className="my-4 px-4 py-3 border-[1px] border-red-600 rounded-md bg-gray-800 text-white text-lg "
               />
             )}
             <input
-            ref={email}
+              ref={email}
               type="text"
               placeholder="Email"
               className="my-4 px-4 py-3 border-[1px] border-red-600 rounded-md bg-gray-800 text-white text-lg "
             />
             <input
-            ref={password}
+              ref={password}
               type="password"
               placeholder="Password"
               className="my-4 px-4 py-3 border-[1px] border-red-600 rounded-md bg-gray-800 text-white text-lg "
