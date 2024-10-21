@@ -7,10 +7,11 @@ const Login = () => {
   const [errorMessage,setErrorMessage] =useState(null)
   const email =useRef(null)
   const password = useRef(null)
+  const name = useRef(null)
 
   const handleButtonClick=()=>{
     // validated the data
-    const message =checkValidData(email.current.value,password.current.value)
+    const message =checkValidData(email.current.value,password.current.value, isSignInForm ? "": name.current.value)
      setErrorMessage(message)
   }
   const toggleSingInForm = () => {
@@ -41,6 +42,7 @@ const Login = () => {
           <form onSubmit={(e)=>e.preventDefault()} className="flex flex-col ">
             {!isSignInForm && (
               <input
+              ref={name}
                 type="text"
                 placeholder="Full Name"
                 className="my-4 px-4 py-3 border-[1px] border-red-600 rounded-md bg-gray-800 text-white text-lg "
