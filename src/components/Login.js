@@ -3,7 +3,6 @@ import Header from "./Header";
 import { checkValidData } from "../utils/checkValidData";
 import { auth } from "../utils/firebase";
 import {  createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from 'react-router-dom';
 import { updateProfile } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
@@ -17,7 +16,6 @@ const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
   const name = useRef(null);
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
 
@@ -51,7 +49,8 @@ const Login = () => {
                 photoURL: photoURL,
               })
             );
-            navigate('/browse')
+            // remaining logic is in onAuthStateChage api in header take care
+            
           }).catch((error) => {
             setErrorMessage(error.message)
           });
@@ -71,10 +70,7 @@ const Login = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
-        navigate('/browse')
-        
-        // Further sign-in logic can go here
+        // Further sign-in in onAuthStateChage api in header take care
       })
       .catch((error) => {
         const errorCode = error.code;
