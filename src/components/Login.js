@@ -6,6 +6,7 @@ import {  createUserWithEmailAndPassword,signInWithEmailAndPassword } from "fire
 import { updateProfile } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { BACKGORUND_LOGIN,USER_AVATAR } from "../utils/constants";
 
 
 
@@ -37,7 +38,7 @@ const Login = () => {
           // Signed up
           const user = userCredential.user;
           updateProfile(user, {
-            displayName: name.current.value, photoURL: "https://avatars.githubusercontent.com/u/74778515?v=4"
+            displayName: name.current.value, photoURL: USER_AVATAR
           }).then(() => {
             // Profile updated!
             const { uid, email, displayName, photoURL } = auth.currentUser;
@@ -93,7 +94,7 @@ const Login = () => {
       <div className="absolute inset-0 z-10">
         <img
           className="w-full h-full object-cover"
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/7c0e18aa-2c95-474d-802e-7f30e75dcca4/web/IN-en-20241014-TRIFECTA-perspective_e7121311-c11e-4809-a3e6-22abffa33569_large.jpg"
+          src={BACKGORUND_LOGIN  }
           alt="background"
         />
       </div>

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "../utils/userSlice";
 import { useDispatch } from "react-redux";
+import { LOGO } from "../utils/constants";
 
 
 
@@ -16,7 +17,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+   const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // signin and signup
         const { uid, email, displayName, photoURL } = user;
@@ -35,6 +36,8 @@ const Header = () => {
         navigate('/')
       }
     });
+    //to unsubscribe when component unmount - this is a good practice
+    return ()=>{unsubscribe() } 
   }, []);
   const handleSignOut = () => {
     signOut(auth)
@@ -50,7 +53,7 @@ const Header = () => {
     <div className="w-screen absolute z-50 px-8 py-2 bg-gradient-to-b from-black flex justify-between">
       <img
         className="w-40"
-        src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
+        src= {LOGO}
         alt="logo"
       />
       { user &&
