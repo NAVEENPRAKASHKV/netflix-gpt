@@ -3,6 +3,12 @@ import Header from "./Header";
 import { checkValidData } from "../utils/checkValidData";
 import { auth } from "../utils/firebase";
 import {  createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+import { updateProfile } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
+
+
 
 
 const Login = () => {
@@ -11,6 +17,9 @@ const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
   const name = useRef(null);
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
 
   const handleButtonClick = () => {
     // validated the data
@@ -29,8 +38,26 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name.current.value, photoURL: "https://avatars.githubusercontent.com/u/74778515?v=4"
+          }).then(() => {
+            // Profile updated!
+            const { uid, email, displayName, photoURL } = auth.currentUser;
+            dispatch(
+              addUser({
+                uid: uid,
+                email: email,
+                displayName: displayName,
+                photoURL: photoURL,
+              })
+            );
+            navigate('/browse')
+          }).catch((error) => {
+            setErrorMessage(error.message)
+          });
           console.log(user)
-          // ...
+          
+          
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -45,6 +72,8 @@ const Login = () => {
         // Signed in
         const user = userCredential.user;
         console.log(user);
+        navigate('/browse')
+        
         // Further sign-in logic can go here
       })
       .catch((error) => {
@@ -112,8 +141,8 @@ const Login = () => {
               onClick={toggleSingInForm}
             >
               {isSignInForm
-                ? "Already Registered ? Sign In Now"
-                : "New to Netflix? Sign Up Now"}
+                ? "New to Netflix? Sign Up Now"
+                : "Already Registered ? Sign In Now"}
             </p>
           </form>
         </div>
